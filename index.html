@@ -1,0 +1,2050 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>منصة التحديات والمسابقات الأسبوعية - شام كاش</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --card-2: #273549;
+      --primary: #38bdf8;
+      --accent: #22c55e;
+      --warn: #f59e0b;
+      --danger: #ef4444;
+      --purple: #a855f7;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; font-family: "Segoe UI", Tahoma, Arial, sans-serif; }
+
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #0b1120, #172554);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container { max-width: 1040px; margin: 0 auto; }
+
+    header {
+      background: rgba(30, 41, 59, 0.92);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    h1 { margin: 0; font-size: 1.45rem; color: var(--primary); }
+    .subtitle { margin: 4px 0 0; color: var(--muted); font-size: 0.92rem; }
+
+    .game-switcher {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .game-card {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 14px;
+      padding: 14px 15px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .game-card:hover { transform: translateY(-2px); border-color: var(--primary); }
+    .game-card.active {
+      background: rgba(56, 189, 248, 0.14);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35);
+    }
+
+    .game-card-title { font-weight: 700; font-size: 0.96rem; color: #fff; margin-bottom: 4px; }
+    .game-card-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.4; }
+
+    .tabs { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.12s ease, opacity 0.15s ease;
+    }
+
+    button:hover { transform: translateY(-1px); opacity: 0.95; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-primary { background: var(--primary); color: #082f49; }
+    .btn-success { background: var(--accent); color: #052e16; }
+    .btn-warn { background: var(--warn); color: #451a03; }
+    .btn-danger { background: var(--danger); color: #ffffff; }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .panel {
+      display: none;
+      background: rgba(30, 41, 59, 0.94);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .panel.active { display: block; }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+
+    .stat-box {
+      background: var(--card-2);
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.15);
+    }
+
+    .stat-label { color: var(--muted); font-size: 0.85rem; }
+    .stat-value { font-size: 1.35rem; font-weight: 700; margin-top: 6px; color: var(--primary); }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: #0f172a;
+      color: var(--text);
+      font-size: 0.95rem;
+      margin-top: 6px;
+    }
+
+    label { display: block; font-size: 0.9rem; color: #cbd5e1; margin-top: 10px; }
+
+    .timer-bar {
+      height: 10px;
+      background: #0f172a;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 14px 0 20px;
+    }
+
+    .timer-fill {
+      height: 100%;
+      width: 100%;
+      background: var(--accent);
+      transition: width 0.2s linear, background-color 0.2s ease;
+    }
+
+    .options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .option-btn {
+      text-align: right;
+      background: var(--card-2);
+      color: var(--text);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      padding: 14px;
+    }
+
+    .option-btn:hover { border-color: var(--primary); }
+
+    .reaction-pad {
+      height: 230px;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+      cursor: pointer;
+      user-select: none;
+      margin: 16px 0;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      transition: background-color 0.15s ease, transform 0.1s ease;
+    }
+
+    .reaction-pad.waiting { background: #7f1d1d; }
+    .reaction-pad.ready { background: #14532d; border-color: #4ade80; }
+    .reaction-pad.result { background: #1e3a8a; }
+
+    .memory-display {
+      background: #0f172a;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 14px;
+      padding: 26px 16px;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: 8px;
+      color: var(--primary);
+      margin: 16px 0;
+      min-height: 86px;
+    }
+
+    .color-grid {
+      display: grid;
+      gap: 10px;
+      max-width: 420px;
+      margin: 18px auto;
+    }
+
+    .color-tile {
+      aspect-ratio: 1 / 1;
+      border-radius: 12px;
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      cursor: pointer;
+      padding: 0;
+      transition: transform 0.1s ease, border-color 0.12s ease;
+    }
+
+    .color-tile:hover { transform: scale(1.03); border-color: #fff; }
+
+    .table-wrap { overflow-x: auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+      font-size: 0.92rem;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    th { color: var(--primary); background: rgba(15, 23, 42, 0.5); }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .badge-ok { background: rgba(34, 197, 94, 0.2); color: #4ade80; }
+    .badge-pending { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
+    .badge-secret { background: rgba(148, 163, 184, 0.16); color: #cbd5e1; }
+
+    .notice-bar {
+      background: rgba(245, 158, 11, 0.14);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      color: #fde68a;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      margin-bottom: 14px;
+      display: none;
+    }
+
+    .schedule-banner {
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+    }
+
+    .admin-sim-bar {
+      background: rgba(168, 85, 247, 0.12);
+      border: 1px dashed rgba(168, 85, 247, 0.6);
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      display: none;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      font-size: 0.85rem;
+    }
+
+    .list-clean { padding-right: 20px; line-height: 1.8; color: #e2e8f0; }
+
+    .winner-box {
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.4);
+      border-radius: 14px;
+      padding: 18px;
+      margin-top: 18px;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.78);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 999;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal-card {
+      width: 100%;
+      max-width: 410px;
+      background: var(--card);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      border-radius: 16px;
+      padding: 22px;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.45);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .modal-header h3 {
+      margin: 0;
+      color: var(--primary);
+      font-size: 1.15rem;
+    }
+
+    .modal-close {
+      background: transparent;
+      color: var(--muted);
+      padding: 4px 8px;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .modal-close:hover { color: var(--text); }
+
+    .password-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .password-wrap input { padding-left: 44px; }
+
+    .toggle-pass-btn {
+      position: absolute;
+      left: 8px;
+      top: 6px;
+      background: transparent;
+      color: var(--muted);
+      padding: 6px;
+      font-size: 0.9rem;
+    }
+
+    .modal-error {
+      color: #fca5a5;
+      background: rgba(239, 68, 68, 0.14);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 0.86rem;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    @media print {
+      header .tabs, .game-switcher, .no-print, .modal-backdrop { display: none !important; }
+      body { background: #fff; color: #000; padding: 0; }
+      .panel { display: block !important; background: #fff; color: #000; border: 1px solid #ccc; }
+      .stat-box { background: #f8fafc; color: #000; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1 id="mainHeaderTitle">🧠 تحدي الألغاز والسرعة</h1>
+        <p class="subtitle" id="mainHeaderSubtitle">
+          اللعبة النشطة: الألغاز والسرعة • المسابقة الجمعة • النتائج السبت عبر شام كاش
+        </p>
+      </div>
+      <div class="tabs">
+        <button id="btnGameTab" class="btn-primary" onclick="switchTab('gameTab')">🎮 اللعب والنتيجة</button>
+        <button id="btnLeagueTab" class="btn-outline" onclick="switchTab('leagueTab')">🏆 مسابقة اللعبة الأسبوعية</button>
+        <button id="btnAdminLogin" class="btn-outline" onclick="toggleAdminMode()">🔐 دخول الأدمن</button>
+        <button id="btnAdminLogout" class="btn-danger" style="display:none;" onclick="logoutAdminMode()">🔓 خروج الأدمن</button>
+      </div>
+    </header>
+
+    <div id="scheduleBanner" class="schedule-banner"></div>
+
+    <div id="adminSimBar" class="admin-sim-bar no-print">
+      <strong>🛠️ أدوات الأدمن (تجربة الأيام):</strong>
+      <button type="button" class="btn-outline" style="padding:5px 10px; font-size:0.82rem;" onclick="setSimulatedDay(null)">اليوم الحقيقي</button>
+      <button type="button" class="btn-success" style="padding:5px 10px; font-size:0.82rem;" onclick="setSimulatedDay(5)">محاكاة الجمعة (المسابقة)</button>
+      <button type="button" class="btn-primary" style="padding:5px 10px; font-size:0.82rem;" onclick="setSimulatedDay(6)">محاكاة السبت (النتائج)</button>
+      <button type="button" class="btn-outline" style="padding:5px 10px; font-size:0.82rem;" onclick="setSimulatedDay(2)">محاكاة يوم عادي</button>
+    </div>
+
+    <div class="game-switcher no-print">
+      <div id="card-riddles" class="game-card active" onclick="selectGame('riddles')">
+        <div class="game-card-title">🧠 1. الألغاز والسرعة</div>
+        <div class="game-card-desc">10 أسئلة عشوائية، 10 ثوانٍ لكل سؤال + تحليل IQ.</div>
+      </div>
+      <div id="card-reaction" class="game-card" onclick="selectGame('reaction')">
+        <div class="game-card-title">⚡ 2. رد الفعل السريع</div>
+        <div class="game-card-desc">8 جولات لقياس سرعة الاستجابة فور تحوّل الشاشة للأخضر.</div>
+      </div>
+      <div id="card-memory" class="game-card" onclick="selectGame('memory')">
+        <div class="game-card-title">🔢 3. الذاكرة الرقمية</div>
+        <div class="game-card-desc">احفظ السلاسل الرقمية المتصاعدة وأعد كتابتها بدقة.</div>
+      </div>
+      <div id="card-math" class="game-card" onclick="selectGame('math')">
+        <div class="game-card-title">🧮 4. الحساب الذهني</div>
+        <div class="game-card-desc">10 مسائل حسابية سريعة تحت ضغط الوقت.</div>
+      </div>
+      <div id="card-color" class="game-card" onclick="selectGame('color')">
+        <div class="game-card-title">🎨 5. كشف اللون المختلف</div>
+        <div class="game-card-desc">10 جولات لاختبار دقة الملاحظة وسرعة التمييز اللوني.</div>
+      </div>
+    </div>
+
+    <section id="gameTab" class="panel active">
+      <div id="startScreen">
+        <h2 id="startHeading">ابدأ مباراة جديدة في تحدي الألغاز والسرعة</h2>
+        <p class="subtitle" id="startDescription">
+          كل سؤال له 10 ثوانٍ فقط، والسرعة مع صحة الإجابة ترفع نقاطك وترتيبك في مسابقة هذه اللعبة.
+        </p>
+        <p class="subtitle" style="color:#fde68a; margin-top:8px;">
+          📌 المسابقة الرسمية تُقام <strong>كل يوم جمعة</strong> للمشتركين المعتمدين فقط بعد تأكيد وصول المبلغ، وتُعلن النتائج <strong>يوم السبت</strong>.
+        </p>
+
+        <div class="grid-3">
+          <div>
+            <label for="playerName">اسم اللاعب (المعتمد في المسابقة)</label>
+            <input type="text" id="playerName" placeholder="اكتب اسمك المسجل والمعتمد" />
+          </div>
+          <div>
+            <label for="playerPhone">رقم التواصل / حساب شام كاش</label>
+            <input type="text" id="playerPhone" placeholder="اكتب رقمك المسجل لتأكيد الهوية" />
+          </div>
+          <div>
+            <label for="bankInfo">معلومات التحدي الحالي</label>
+            <div id="bankInfo" class="stat-box" style="margin-top:6px; padding:10px 12px;">
+              <strong id="questionBankCount">15 سؤال جاهز في البنك (10 لكل مباراة)</strong>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-success" onclick="startCurrentGame()">🚀 انطلاق التحدي الآن</button>
+      </div>
+
+      <div id="riddlesPlayScreen" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <strong id="qProgress">السؤال 1 من 10</strong> •
+            <span id="qCategory" class="badge badge-ok">منطق</span>
+          </div>
+          <div>
+            ⏱️ الوقت المتبقي: <strong id="timeLeftText">10.0</strong> ثانية |
+            النقاط: <strong id="liveScore">0</strong>
+          </div>
+        </div>
+        <div class="timer-bar"><div id="timerFill" class="timer-fill"></div></div>
+        <h2 id="questionText" style="line-height:1.5;"></h2>
+        <div id="optionsContainer" class="options"></div>
+      </div>
+
+      <div id="reactionPlayScreen" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <strong id="reactRoundText">الجولة 1 من 8</strong> •
+            <span class="badge badge-ok">سرعة استجابة</span>
+          </div>
+          <div>النقاط: <strong id="reactLiveScore">0</strong></div>
+        </div>
+        <div id="reactionPad" class="reaction-pad waiting" onclick="handleReactionClick()">
+          <h2 id="reactionTitle" style="margin:0 0 8px;">انتظر اللون الأخضر...</h2>
+          <p id="reactionSub" style="margin:0; color:#e2e8f0;">لا تضغط قبل أن تتحول الشاشة إلى الأخضر</p>
+        </div>
+        <div class="no-print"><button class="btn-outline" onclick="abortToStart()">إلغاء الجولة</button></div>
+      </div>
+
+      <div id="memoryPlayScreen" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <strong id="memLevelText">المرحلة 1 (3 أرقام)</strong> •
+            <span class="badge badge-ok">ذاكرة بصرية</span>
+          </div>
+          <div>النقاط: <strong id="memLiveScore">0</strong></div>
+        </div>
+        <div id="memorySequenceBox" class="memory-display">---</div>
+        <div id="memoryInputArea" style="display:none;">
+          <label for="memoryUserInput">أدخل التسلسل الرقمي الذي شاهدته:</label>
+          <input type="text" id="memoryUserInput" inputmode="numeric" placeholder="اكتب الأرقام هنا..." onkeydown="if(event.key==='Enter') checkMemoryAnswer()" />
+          <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn-success" onclick="checkMemoryAnswer()">✔️ تأكيد الإجابة</button>
+            <button class="btn-outline" onclick="abortToStart()">إلغاء الجولة</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="mathPlayScreen" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <strong id="mathProgress">المسألة 1 من 10</strong> •
+            <span id="mathOpBadge" class="badge badge-ok">حساب ذهني</span>
+          </div>
+          <div>
+            ⏱️ الوقت المتبقي: <strong id="mathTimeText">8.0</strong> ثانية |
+            النقاط: <strong id="mathLiveScore">0</strong>
+          </div>
+        </div>
+        <div class="timer-bar"><div id="mathTimerFill" class="timer-fill"></div></div>
+        <h2 id="mathQuestionText" style="text-align:center; font-size:1.8rem; margin:18px 0; direction:ltr;"></h2>
+        <div id="mathOptionsContainer" class="options"></div>
+      </div>
+
+      <div id="colorPlayScreen" style="display:none;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <strong id="colorRoundText">الجولة 1 من 10</strong> •
+            <span class="badge badge-ok">دقة بصرية</span>
+          </div>
+          <div>
+            ⏱️ الوقت المتبقي: <strong id="colorTimeText">7.0</strong> ثانية |
+            النقاط: <strong id="colorLiveScore">0</strong>
+          </div>
+        </div>
+        <div class="timer-bar"><div id="colorTimerFill" class="timer-fill"></div></div>
+        <p style="text-align:center; color:#cbd5e1; margin:6px 0;">انقر على المربع صاحب اللون المختلف بأسرع وقت:</p>
+        <div id="colorGrid" class="color-grid"></div>
+        <div class="no-print" style="text-align:center;"><button class="btn-outline" onclick="abortToStart()">إلغاء الجولة</button></div>
+      </div>
+
+      <div id="resultScreen" style="display:none;">
+        <h2>📊 تقرير نتيجتك وتحليل الأداء</h2>
+        <p id="resultPlayerSummary" class="subtitle"></p>
+
+        <div class="grid-3">
+          <div class="stat-box">
+            <div class="stat-label" id="metric1Label">مؤشر IQ التقديري للأداء</div>
+            <div class="stat-value" id="iqScore">--</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label" id="metric2Label">الإجابات الصحيحة ومجموع النقاط</div>
+            <div class="stat-value" id="correctAndPoints">--</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-label" id="metric3Label">متوسط سرعة الإجابة</div>
+            <div class="stat-value" id="avgSpeed">--</div>
+          </div>
+        </div>
+
+        <div class="grid-3" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+          <div class="stat-box">
+            <h3 style="margin-top:0; color:#4ade80;">✅ إيجابياتك</h3>
+            <ul id="prosList" class="list-clean"></ul>
+          </div>
+          <div class="stat-box">
+            <h3 style="margin-top:0; color:#fbbf24;">⚠️ سلبياتك ونقاط التحسين</h3>
+            <ul id="consList" class="list-clean"></ul>
+          </div>
+        </div>
+
+        <div class="no-print" style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn-primary" onclick="downloadResult()">📥 سحب النتيجة (ملف نصي)</button>
+          <button class="btn-outline" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+          <button class="btn-success" onclick="resetGame()">🔄 لعب جولة جديدة</button>
+          <button class="btn-warn" onclick="switchTab('leagueTab')">🏆 الذهاب لمسابقة اللعبة</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="leagueTab" class="panel">
+      <div id="cloudNotice" class="notice-bar"></div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h2 id="leagueTitle">🏆 المسابقة الأسبوعية - تحدي الألغاز والسرعة (شام كاش)</h2>
+          <p class="subtitle">
+            رسوم الاشتراك: <strong>100 ليرة سورية جديدة</strong> •
+            الجوائز: <strong>30% للأول</strong>، <strong>20% للثاني</strong>، <strong>10% للثالث</strong> من إجمالي المبلغ.
+          </p>
+        </div>
+        <button class="btn-outline no-print" onclick="renderLeague()">🔄 تحديث الجدول</button>
+      </div>
+
+      <div style="background:var(--card-2); padding:18px; border-radius:14px; border:1px solid rgba(56,189,248,0.3); margin:16px 0;">
+        <h3 style="margin-top:0; color:var(--primary);">💳 بيانات تحويل رسوم الاشتراك (100 ليرة سورية جديدة)</h3>
+        <div>
+          <p style="margin:6px 0;"><strong>رقم حساب شام كاش:</strong></p>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <code id="shamcashAccountNumber" style="background:#0f172a; padding:8px 12px; border-radius:8px; font-size:1rem; color:#38bdf8;">6034316833684453</code>
+            <button class="btn-primary" style="padding:7px 12px; font-size:0.85rem;" onclick="copyShamcashValue('6034316833684453', 'تم نسخ رقم حساب شام كاش!')">📋 نسخ الرقم</button>
+          </div>
+
+          <p style="margin:14px 0 6px;"><strong>عنوان / رمز الاستلام:</strong></p>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <code id="shamcashReceiveCode" style="background:#0f172a; padding:8px 12px; border-radius:8px; font-size:0.85rem; word-break:break-all; color:#4ade80;">7a0eb67f8cd03909d7ce97bbc2b1da8c</code>
+            <button class="btn-outline" style="padding:7px 12px; font-size:0.85rem;" onclick="copyShamcashValue('7a0eb67f8cd03909d7ce97bbc2b1da8c', 'تم نسخ رمز الاستلام!')">📋 نسخ الرمز</button>
+          </div>
+          <p id="copyFeedback" style="color:#4ade80; font-size:0.88rem; margin:8px 0 0; min-height:20px;"></p>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="stat-box">
+          <div class="stat-label">عدد المشتركين المؤكدين الأسبوعي</div>
+          <div class="stat-value" id="totalParticipants">0</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">إجمالي المبلغ المجموع</div>
+          <div class="stat-value" id="totalPool">0 ل.س جديدة</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-label">جوائز المراكز الثلاثة (30% / 20% / 10%)</div>
+          <div class="stat-value" style="font-size:1rem; line-height:1.6;" id="prizesBreakdown">
+            الأول: 0 | الثاني: 0 | الثالث: 0
+          </div>
+        </div>
+      </div>
+
+      <div class="no-print" style="background:var(--card-2); padding:16px; border-radius:12px; margin-bottom:18px;">
+        <h3 style="margin-top:0;">➕ تسجيل مشترك جديد في مسابقة هذه اللعبة</h3>
+        <p class="subtitle" style="margin-bottom:10px;">
+          لن يتم تفعيل دخولك للمسابقة تلقائياً؛ يبدأ الدخول بعد وصول المبلغ وموافقة الإدارة. رقم الهاتف والشام كاش ورقم الحوالة تظهر للأدمن فقط.
+        </p>
+        <div class="grid-3">
+          <div>
+            <label for="regName">اسم المشترك</label>
+            <input type="text" id="regName" placeholder="الاسم الكامل" />
+          </div>
+          <div>
+            <label for="regContact">رقم الهاتف / حساب شام كاش</label>
+            <input type="text" id="regContact" placeholder="مثال: 0991112233" />
+          </div>
+          <div>
+            <label for="regRef">رقم عملية تحويل شام كاش</label>
+            <input type="text" id="regRef" placeholder="مثال: SC-984512" />
+          </div>
+        </div>
+        <button id="btnRegister" class="btn-success" style="margin-top:12px;" onclick="registerParticipant()">
+          إرسال طلب الاشتراك (100 ل.س جديدة)
+        </button>
+      </div>
+
+      <h3>📋 قائمة المشتركين في المسابقة الأسبوعية</h3>
+      <p class="subtitle" id="privacyNote">🔒 البيانات الحساسة (الرقم، شام كاش، رقم الحوالة) مخفية عن العام وتظهر للأدمن فقط.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>الاسم</th>
+              <th>رقم / شام كاش</th>
+              <th>رقم الحوالة</th>
+              <th>النتيجة</th>
+              <th>سرعة الحل (ث)</th>
+              <th>الحالة والإجراء</th>
+            </tr>
+          </thead>
+          <tbody id="participantsTableBody"></tbody>
+        </table>
+      </div>
+
+      <div id="adminContestActions" class="no-print" style="margin-top:18px; display:none; gap:10px; flex-wrap:wrap;">
+        <button class="btn-warn" onclick="finishWeeklyContest()">🏁 إعلان نتائج وتصنيفات الفائزين</button>
+        <button class="btn-outline" onclick="clearWeeklyContest()">🗑️ بدء أسبوع جديد لهذه اللعبة</button>
+      </div>
+
+      <div id="winnersSection" class="winner-box" style="display:none;">
+        <h3 style="margin-top:0; color:#4ade80;">🎉 نتائج وتصنيفات الفائزين (يوم السبت)</h3>
+        <div id="winnersList"></div>
+
+        <div id="adminPayoutBox" style="display:none;">
+          <hr style="border-color:rgba(148,163,184,0.2); margin:16px 0;" />
+          <h4>📩 نموذج التواصل الفوري لإرسال الجوائز عبر شام كاش (للأدمن)</h4>
+          <div class="grid-3">
+            <div>
+              <label for="winnerSelect">اختر الفائز للتواصل</label>
+              <select id="winnerSelect"></select>
+            </div>
+            <div>
+              <label for="contactChannel">وسيلة التواصل المفضلة</label>
+              <select id="contactChannel">
+                <option value="واتساب">واتساب</option>
+                <option value="اتصال هاتفي">اتصال هاتفي</option>
+                <option value="رسالة شام كاش">رسالة شام كاش</option>
+              </select>
+            </div>
+            <div>
+              <label for="payoutNote">ملاحظة التحويل</label>
+              <input type="text" id="payoutNote" placeholder="مثال: جاهز لاستلام الجائزة" />
+            </div>
+          </div>
+          <button class="btn-primary" style="margin-top:12px;" onclick="sendWinnerContactRequest()">
+            📤 تسجيل طلب التواصل وإرسال الجائزة
+          </button>
+          <p id="contactConfirmation" style="color:#4ade80; font-weight:600; margin-top:10px;"></p>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- نافذة مودال تسجيل دخول الأدمن بكلمة مرور ثابتة -->
+  <div id="adminLoginModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="adminModalTitle">🔐 دخول الأدمن</h3>
+        <button type="button" class="modal-close" onclick="closeAdminModal()" aria-label="إغلاق">✕</button>
+      </div>
+      <p class="subtitle" style="margin:0 0 8px;">
+        أدخل كلمة مرور الأدمن لعرض البيانات الحساسة وإدارة الموافقات.
+      </p>
+      <form id="adminLoginForm" onsubmit="submitAdminLogin(event)">
+        <label for="adminPassInput">كلمة مرور الأدمن</label>
+        <div class="password-wrap">
+          <input type="password" id="adminPassInput" required placeholder="أدخل كلمة المرور" autocomplete="current-password" />
+          <button type="button" class="toggle-pass-btn" onclick="togglePasswordVisibility()" title="إظهار أو إخفاء كلمة المرور">👁️</button>
+        </div>
+
+        <div id="adminLoginError" class="modal-error"></div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-outline" onclick="closeAdminModal()">إلغاء</button>
+          <button type="submit" class="btn-primary">دخول</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    import {
+      getFirestore,
+      collection,
+      query,
+      where,
+      getDocs,
+      addDoc,
+      updateDoc,
+      deleteDoc,
+      doc
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyACpq0EdRF8He3qstMImVapykTs5gItSgM",
+      authDomain: "game-c12d9.firebaseapp.com",
+      projectId: "game-c12d9",
+      storageBucket: "game-c12d9.firebasestorage.app",
+      messagingSenderId: "1089094664839",
+      appId: "1:1089094664839:web:d014190b9df67d51c4ee22",
+      measurementId: "G-KJ2MLW2H52"
+    };
+
+    // كلمة مرور الأدمن الثابتة (يمكنك تغييرها إلى ما تريده)
+    const ADMIN_PASSCODE = "***YOUSEF***ALI***";
+    const LOCAL_FALLBACK_KEY = "shamcash_firestore_fallback_v1";
+    const COLLECTION_NAME = "weekly_participants";
+
+    let firestoreDb = null;
+    let cloudAvailable = false;
+
+    try {
+      const app = initializeApp(firebaseConfig);
+      firestoreDb = getFirestore(app);
+      if (typeof window !== "undefined" && window.location.protocol !== "file:") {
+        try { getAnalytics(app); } catch (_) {}
+      }
+    } catch (e) {
+      console.error("Firebase init error:", e);
+    }
+
+    function readLocalFallback(gameKey) {
+      const all = JSON.parse(localStorage.getItem(LOCAL_FALLBACK_KEY) || "{}");
+      return Array.isArray(all[gameKey]) ? all[gameKey] : [];
+    }
+
+    function writeLocalFallback(gameKey, list) {
+      const all = JSON.parse(localStorage.getItem(LOCAL_FALLBACK_KEY) || "{}");
+      all[gameKey] = list;
+      localStorage.setItem(LOCAL_FALLBACK_KEY, JSON.stringify(all));
+    }
+
+    function setCloudNotice(message) {
+      const el = document.getElementById("cloudNotice");
+      if (!el) return;
+      if (!message) {
+        el.style.display = "none";
+        el.textContent = "";
+      } else {
+        el.style.display = "block";
+        el.textContent = message;
+      }
+    }
+
+    const GAME_META = {
+      riddles: {
+        id: "riddles",
+        title: "🧠 تحدي الألغاز والسرعة",
+        shortName: "الألغاز والسرعة",
+        desc: "كل سؤال له 10 ثوانٍ فقط، والسرعة مع صحة الإجابة ترفع نقاطك وترتيبك.",
+        bankLabel: "15 سؤال جاهز في البنك (10 لكل مباراة)"
+      },
+      reaction: {
+        id: "reaction",
+        title: "⚡ تحدي رد الفعل السريع",
+        shortName: "رد الفعل السريع",
+        desc: "8 جولات: انتظر تحول المربع من الأحمر إلى الأخضر ثم انقر بأقصى سرعة ممكنة.",
+        bankLabel: "8 جولات قياس سرعة الاستجابة"
+      },
+      memory: {
+        id: "memory",
+        title: "🔢 تحدي الذاكرة الرقمية",
+        shortName: "الذاكرة الرقمية",
+        desc: "ستظهر سلسلة أرقام لبضع ثوانٍ ثم تختفي؛ أعد كتابتها بدقة لزيادة طول السلسلة ونقاطك.",
+        bankLabel: "مراحل تصاعدية تبدأ من 3 أرقام"
+      },
+      math: {
+        id: "math",
+        title: "🧮 تحدي الحساب الذهني السريع",
+        shortName: "الحساب الذهني",
+        desc: "10 مسائل حسابية متنوعة (جمع، طرح، ضرب، قسمة) بـ 8 ثوانٍ لكل مسألة.",
+        bankLabel: "10 مسائل مولّدة عشوائياً لكل مباراة"
+      },
+      color: {
+        id: "color",
+        title: "🎨 تحدي كشف اللون المختلف",
+        shortName: "كشف اللون المختلف",
+        desc: "10 جولات: اعثر على المربع المختلف في درجة اللون خلال 7 ثوانٍ لكل جولة.",
+        bankLabel: "10 جولات بتدرجات لونية متدرجة الصعوبة"
+      }
+    };
+
+    const QUESTION_BANK = [
+      { id: 1, category: "logic", label: "منطق وألغاز", q: "شيء يمشي بلا أرجل ويبكي بلا عيون، ما هو؟", options: ["السحاب", "النهر", "الساعة", "الريح"], answer: 0 },
+      { id: 2, category: "math", label: "حساب سريع", q: "ما ناتج: (12 × 4) - 8 ؟", options: ["36", "40", "44", "48"], answer: 1 },
+      { id: 3, category: "general", label: "معلومات عامة", q: "ما هو أسرع حيوان بري في العالم؟", options: ["الأسد", "الحصان", "الفهد الصياد", "الغزال"], answer: 2 },
+      { id: 4, category: "logic", label: "منطق وألغاز", q: "إذا كان اليوم هو السبت، فما اليوم بعد 10 أيام؟", options: ["الأربعاء", "الخميس", "الجمعة", "الثلاثاء"], answer: 0 },
+      { id: 5, category: "math", label: "حساب سريع", q: "ما هو العدد التالي في المتتالية: 2، 6، 18، 54، ... ؟", options: ["108", "162", "148", "124"], answer: 1 },
+      { id: 6, category: "general", label: "معلومات عامة", q: "كم عدد كواكب المجموعة الشمسية؟", options: ["7", "8", "9", "10"], answer: 1 },
+      { id: 7, category: "logic", label: "منطق وألغاز", q: "ما الشيء الذي كلما زاد نقص؟", options: ["العمر", "الماء", "الظل", "المال"], answer: 0 },
+      { id: 8, category: "math", label: "حساب سريع", q: "ما نسبة 25% من العدد 200؟", options: ["25", "40", "50", "75"], answer: 2 },
+      { id: 9, category: "general", label: "معلومات عامة", q: "ما هي عاصمة اليابان؟", options: ["سول", "بكين", "طوكيو", "بانكوك"], answer: 2 },
+      { id: 10, category: "logic", label: "منطق وألغاز", q: "أب لديه 5 بنات، ولكل بنت أخ واحد. كم عدد أبناء الرجل؟", options: ["6 أبناء", "10 أبناء", "5 أبناء", "7 أبناء"], answer: 0 },
+      { id: 11, category: "math", label: "حساب سريع", q: "إذا كان سعر 3 أقلام 150 ليرة، فكم سعر 5 أقلام؟", options: ["200", "250", "300", "350"], answer: 1 },
+      { id: 12, category: "general", label: "معلومات عامة", q: "أي كوكب يُعرف بالكوكب الأحمر؟", options: ["المريخ", "الزهرة", "عطارد", "زحل"], answer: 0 },
+      { id: 13, category: "logic", label: "منطق وألغاز", q: "ما هو الشهر الذي يحتوي على 28 يوماً؟", options: ["فبراير فقط", "جميع الأشهر", "أبريل ويونيو", "ديسمبر"], answer: 1 },
+      { id: 14, category: "math", label: "حساب سريع", q: "ما ناتج: 144 ÷ 12 + 7 ؟", options: ["17", "19", "21", "23"], answer: 1 },
+      { id: 15, category: "general", label: "معلومات عامة", q: "ما هو أطول نهر في العالم؟", options: ["الأمازون", "النيل", "الفرات", "الدانوب"], answer: 1 }
+    ];
+
+    const ENTRY_FEE = 100;
+    const QUESTION_TIME = 10;
+    const QUESTIONS_PER_GAME = 10;
+    const REACTION_ROUNDS = 8;
+    const MATH_ROUNDS = 10;
+    const MATH_TIME = 8;
+    const COLOR_ROUNDS = 10;
+    const COLOR_TIME = 7;
+
+    let activeGame = "riddles";
+    let activeTabId = "gameTab";
+    let isAdminMode = false;
+    let simulatedDay = null;
+    let currentParticipantsCache = [];
+    let currentWinnersCache = [];
+
+    let gameState = null;
+    let reactionState = null;
+    let memoryState = null;
+    let mathState = null;
+    let colorState = null;
+
+    let timerInterval = null;
+    let reactionTimeout = null;
+    let memoryTimeout = null;
+    let lastReport = null;
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function normalizeText(val) {
+      return String(val ?? "").trim().toLowerCase();
+    }
+
+    function getEffectiveDay() {
+      if (simulatedDay !== null) return simulatedDay;
+      return new Date().getDay();
+    }
+
+    function getDayArabicName(day) {
+      const names = ["الأحد", "الاثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
+      return names[day] || "";
+    }
+
+    function isFridayContestDay() {
+      return getEffectiveDay() === 5;
+    }
+
+    function isSaturdayResultsDay() {
+      return getEffectiveDay() === 6;
+    }
+
+    function renderScheduleBanner() {
+      const day = getEffectiveDay();
+      const dayName = getDayArabicName(day);
+      const banner = document.getElementById("scheduleBanner");
+      if (!banner) return;
+
+      if (day === 5) {
+        banner.innerHTML = `🟢 <strong>اليوم (${dayName}):</strong> المسابقة مفتوحة للمشتركين المعتمدين فقط. تُعلن النتائج والتصنيفات <strong>يوم السبت</strong>.`;
+      } else if (day === 6) {
+        banner.innerHTML = `🔵 <strong>اليوم (${dayName}):</strong> يوم إعلان نتائج الفائزين وتصنيفاتهم (حسب صحة الإجابة وسرعة الحل). المسابقة القادمة <strong>يوم الجمعة</strong>.`;
+      } else {
+        banner.innerHTML = `⏳ <strong>اليوم (${dayName}):</strong> التسجيل مفتوح دوماً، والموافقة تتم بعد وصول المبلغ. تُقام المسابقة <strong>كل يوم جمعة</strong> وتظهر النتائج <strong>يوم السبت</strong>.`;
+      }
+    }
+
+    function setSimulatedDay(day) {
+      if (!isAdminMode) return;
+      simulatedDay = day;
+      renderScheduleBanner();
+      drawParticipantsTable();
+    }
+
+    function applyAdminVisibility() {
+      document.getElementById("btnAdminLogin").style.display = isAdminMode ? "none" : "inline-block";
+      document.getElementById("btnAdminLogout").style.display = isAdminMode ? "inline-block" : "none";
+      document.getElementById("adminSimBar").style.display = isAdminMode ? "flex" : "none";
+      document.getElementById("adminContestActions").style.display = isAdminMode ? "flex" : "none";
+      document.getElementById("adminPayoutBox").style.display = isAdminMode ? "block" : "none";
+      document.getElementById("privacyNote").textContent = isAdminMode
+        ? "🔓 وضع الأدمن نشط: تظهر لك البيانات الحساسة وأزرار الموافقة وإدارة المسابقة."
+        : "🔒 البيانات الحساسة (الرقم، شام كاش، رقم الحوالة) مخفية عن العام وتظهر للأدمن فقط.";
+    }
+
+    function toggleAdminMode() {
+      const modal = document.getElementById("adminLoginModal");
+      const errEl = document.getElementById("adminLoginError");
+      const input = document.getElementById("adminPassInput");
+      errEl.style.display = "none";
+      errEl.textContent = "";
+      input.value = "";
+      input.type = "password";
+      modal.classList.add("open");
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function closeAdminModal() {
+      document.getElementById("adminLoginModal").classList.remove("open");
+    }
+
+    function togglePasswordVisibility() {
+      const input = document.getElementById("adminPassInput");
+      input.type = input.type === "password" ? "text" : "password";
+    }
+
+    function submitAdminLogin(event) {
+      event.preventDefault();
+      const input = document.getElementById("adminPassInput");
+      const errEl = document.getElementById("adminLoginError");
+
+      if (input.value === ADMIN_PASSCODE) {
+        isAdminMode = true;
+        errEl.style.display = "none";
+        closeAdminModal();
+        applyAdminVisibility();
+        drawParticipantsTable();
+      } else {
+        errEl.textContent = "كلمة مرور الأدمن غير صحيحة.";
+        errEl.style.display = "block";
+        input.focus();
+      }
+    }
+
+    function logoutAdminMode() {
+      isAdminMode = false;
+      simulatedDay = null;
+      applyAdminVisibility();
+      renderScheduleBanner();
+      drawParticipantsTable();
+    }
+
+    document.getElementById("adminLoginModal").addEventListener("click", (e) => {
+      if (e.target.id === "adminLoginModal") closeAdminModal();
+    });
+
+    function cleanupActiveTimers() {
+      clearInterval(timerInterval);
+      clearTimeout(reactionTimeout);
+      clearTimeout(memoryTimeout);
+    }
+
+    function selectGame(gameKey) {
+      if (!GAME_META[gameKey]) return;
+      cleanupActiveTimers();
+      activeGame = gameKey;
+      currentWinnersCache = [];
+      document.getElementById("winnersSection").style.display = "none";
+
+      document.querySelectorAll(".game-card").forEach(c => c.classList.remove("active"));
+      document.getElementById(`card-${gameKey}`).classList.add("active");
+
+      const meta = GAME_META[gameKey];
+      document.getElementById("mainHeaderTitle").textContent = meta.title;
+      document.getElementById("mainHeaderSubtitle").textContent =
+        `اللعبة النشطة: ${meta.shortName} • المسابقة الجمعة • النتائج السبت عبر شام كاش`;
+      document.getElementById("startHeading").textContent = `ابدأ مباراة جديدة في ${meta.title}`;
+      document.getElementById("startDescription").textContent = meta.desc;
+      document.getElementById("questionBankCount").textContent = meta.bankLabel;
+      document.getElementById("leagueTitle").textContent =
+        `🏆 المسابقة الأسبوعية - ${meta.title} (شام كاش)`;
+
+      resetGame();
+      if (activeTabId === "leagueTab") {
+        renderLeague();
+      }
+    }
+
+    function switchTab(tabId) {
+      activeTabId = tabId;
+      document.querySelectorAll(".panel").forEach(p => p.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+
+      const btnGame = document.getElementById("btnGameTab");
+      const btnLeague = document.getElementById("btnLeagueTab");
+      if (tabId === "gameTab") {
+        btnGame.className = "btn-primary";
+        btnLeague.className = "btn-outline";
+      } else {
+        btnLeague.className = "btn-primary";
+        btnGame.className = "btn-outline";
+        renderLeague();
+      }
+    }
+
+    function abortToStart() {
+      cleanupActiveTimers();
+      ["riddlesPlayScreen", "reactionPlayScreen", "memoryPlayScreen", "mathPlayScreen", "colorPlayScreen", "resultScreen"]
+        .forEach(id => (document.getElementById(id).style.display = "none"));
+      document.getElementById("startScreen").style.display = "block";
+    }
+
+    function resetGame() {
+      abortToStart();
+    }
+
+    async function ensureParticipantsLoadedForGame() {
+      if (currentParticipantsCache.length > 0) return;
+      if (!firestoreDb) {
+        currentParticipantsCache = readLocalFallback(activeGame);
+        return;
+      }
+      try {
+        const q = query(collection(firestoreDb, COLLECTION_NAME), where("game_key", "==", activeGame));
+        const snap = await getDocs(q);
+        currentParticipantsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      } catch (_) {
+        currentParticipantsCache = readLocalFallback(activeGame);
+      }
+    }
+
+    async function startCurrentGame() {
+      cleanupActiveTimers();
+      await ensureParticipantsLoadedForGame();
+
+      const name = document.getElementById("playerName").value.trim();
+      const phone = document.getElementById("playerPhone").value.trim();
+
+      if (!isFridayContestDay() && !isAdminMode) {
+        alert(`عذراً، المسابقة تُقام كل يوم جمعة فقط. اليوم هو (${getDayArabicName(getEffectiveDay())}).`);
+        return;
+      }
+
+      if (!name || !phone) {
+        alert("يرجى إدخال الاسم ورقم التواصل/شام كاش المسجلين للتحقق من موافقة الإدارة.");
+        return;
+      }
+
+      const matched = currentParticipantsCache.find(
+        p => normalizeText(p.name) === normalizeText(name) && normalizeText(p.contact) === normalizeText(phone)
+      );
+
+      if (!isAdminMode) {
+        if (!matched) {
+          alert("لم يتم العثور على اشتراك مطابق لبياناتك. يرجى التسجيل أولاً وانتظار موافقة الإدارة بعد وصول المبلغ.");
+          return;
+        }
+        if (matched.confirmed !== true) {
+          alert("دخولك غير مفعل بعد؛ طلبك قيد المراجعة ولن يتم الدخول إلا بعد وصول المال وموافقتي كأدمن.");
+          return;
+        }
+      }
+
+      const effectiveName = matched ? matched.name : name;
+      const effectivePhone = matched ? matched.contact : phone;
+
+      ["startScreen", "resultScreen", "riddlesPlayScreen", "reactionPlayScreen", "memoryPlayScreen", "mathPlayScreen", "colorPlayScreen"]
+        .forEach(id => (document.getElementById(id).style.display = "none"));
+
+      if (activeGame === "riddles") startRiddlesGame(effectiveName, effectivePhone);
+      else if (activeGame === "reaction") startReactionGame(effectiveName, effectivePhone);
+      else if (activeGame === "memory") startMemoryGame(effectiveName, effectivePhone);
+      else if (activeGame === "math") startMathGame(effectiveName, effectivePhone);
+      else if (activeGame === "color") startColorGame(effectiveName, effectivePhone);
+    }
+
+    async function syncScoreToCloud(playerName, playerPhone, score, metricValue, isCorrectOverall = true) {
+      const match = currentParticipantsCache.find(
+        p =>
+          normalizeText(p.name) === normalizeText(playerName) &&
+          normalizeText(p.contact) === normalizeText(playerPhone)
+      );
+      if (match) {
+        const shouldUpdate =
+          !match.played ||
+          Number(score) > Number(match.score || 0) ||
+          (Number(score) === Number(match.score || 0) && Number(metricValue) < Number(match.avg_time || 999));
+
+        if (shouldUpdate) {
+          match.played = true;
+          match.is_correct = Boolean(isCorrectOverall);
+          match.score = score;
+          match.avg_time = metricValue;
+          writeLocalFallback(activeGame, currentParticipantsCache);
+
+          if (firestoreDb && cloudAvailable && typeof match.id === "string" && !match.id.startsWith("local_")) {
+            try {
+              await updateDoc(doc(firestoreDb, COLLECTION_NAME, match.id), {
+                played: true,
+                is_correct: Boolean(isCorrectOverall),
+                score,
+                avg_time: metricValue
+              });
+            } catch (e) {
+              console.error("Firestore update error:", e);
+            }
+          }
+        }
+        if (activeTabId === "leagueTab") {
+          renderLeague();
+        }
+      }
+    }
+
+    function pickUniqueQuestions(count) {
+      const copy = [...QUESTION_BANK];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy.slice(0, Math.min(count, copy.length));
+    }
+
+    function startRiddlesGame(name, phone) {
+      gameState = {
+        playerName: name,
+        playerPhone: phone,
+        questions: pickUniqueQuestions(QUESTIONS_PER_GAME),
+        currentIndex: 0,
+        score: 0,
+        correctCount: 0,
+        answersLog: [],
+        questionStartTime: 0
+      };
+      document.getElementById("riddlesPlayScreen").style.display = "block";
+      showQuestion();
+    }
+
+    function showQuestion() {
+      clearInterval(timerInterval);
+      const qObj = gameState.questions[gameState.currentIndex];
+      document.getElementById("qProgress").textContent =
+        `السؤال ${gameState.currentIndex + 1} من ${gameState.questions.length}`;
+      document.getElementById("qCategory").textContent = qObj.label;
+      document.getElementById("liveScore").textContent = Math.round(gameState.score);
+      document.getElementById("questionText").textContent = qObj.q;
+
+      const optionsDiv = document.getElementById("optionsContainer");
+      optionsDiv.innerHTML = "";
+
+      qObj.options.forEach((optText, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.textContent = optText;
+        btn.onclick = () => submitAnswer(idx);
+        optionsDiv.appendChild(btn);
+      });
+
+      gameState.questionStartTime = performance.now();
+      updateTimerUI("timeLeftText", "timerFill", QUESTION_TIME, QUESTION_TIME);
+
+      timerInterval = setInterval(() => {
+        const elapsed = (performance.now() - gameState.questionStartTime) / 1000;
+        const remaining = Math.max(0, QUESTION_TIME - elapsed);
+        updateTimerUI("timeLeftText", "timerFill", remaining, QUESTION_TIME);
+        if (remaining <= 0) {
+          clearInterval(timerInterval);
+          submitAnswer(null);
+        }
+      }, 100);
+    }
+
+    function updateTimerUI(textId, fillId, remaining, total) {
+      document.getElementById(textId).textContent = remaining.toFixed(1);
+      const pct = (remaining / total) * 100;
+      const fill = document.getElementById(fillId);
+      fill.style.width = `${pct}%`;
+      if (pct > 50) fill.style.backgroundColor = "#22c55e";
+      else if (pct > 25) fill.style.backgroundColor = "#f59e0b";
+      else fill.style.backgroundColor = "#ef4444";
+    }
+
+    function submitAnswer(chosenIndex) {
+      clearInterval(timerInterval);
+      document.querySelectorAll(".option-btn").forEach(b => (b.disabled = true));
+      const qObj = gameState.questions[gameState.currentIndex];
+      const elapsedSec = Math.min(
+        QUESTION_TIME,
+        Number(((performance.now() - gameState.questionStartTime) / 1000).toFixed(2))
+      );
+      const isCorrect = chosenIndex !== null && chosenIndex === qObj.answer;
+      let earned = 0;
+
+      if (isCorrect) {
+        gameState.correctCount += 1;
+        const speedBonus = Math.max(0, ((QUESTION_TIME - elapsedSec) / QUESTION_TIME) * 100);
+        earned = Math.round(100 + speedBonus);
+        gameState.score += earned;
+      }
+
+      gameState.answersLog.push({ question: qObj.q, category: qObj.category, isCorrect, timeTaken: elapsedSec, earned });
+
+      setTimeout(() => {
+        gameState.currentIndex += 1;
+        if (gameState.currentIndex < gameState.questions.length) showQuestion();
+        else finishRiddlesGame();
+      }, 350);
+    }
+
+    function finishRiddlesGame() {
+      document.getElementById("riddlesPlayScreen").style.display = "none";
+      const totalQ = gameState.questions.length;
+      const accuracy = gameState.correctCount / totalQ;
+      const avgTime = gameState.answersLog.reduce((sum, item) => sum + item.timeTaken, 0) / totalQ;
+      const speedFactor = Math.max(0, (QUESTION_TIME - avgTime) / QUESTION_TIME);
+      const estimatedIQ = Math.round(78 + accuracy * 45 + speedFactor * 20);
+      const finalScore = Math.round(gameState.score);
+      const passedAccuracy = accuracy >= 0.5;
+
+      const pros = [];
+      const cons = [];
+      if (accuracy >= 0.7) pros.push("دقة عالية في الوصول للإجابات الصحيحة ضمن وقت محدود.");
+      else cons.push("انخفاض نسبة الإجابات الصحيحة؛ يُنصح بقراءة السؤال بهدوء قبل الاختيار.");
+      if (avgTime <= 4.5) pros.push(`سرعة بديهة ممتازة (متوسط ${avgTime.toFixed(1)} ثانية لكل سؤال).`);
+      else cons.push(`بطء نسبي في حسم الإجابة (متوسط ${avgTime.toFixed(1)} ثانية)، والسرعة تحسم الترتيب.`);
+
+      syncScoreToCloud(gameState.playerName, gameState.playerPhone, finalScore, Number(avgTime.toFixed(2)), passedAccuracy);
+
+      renderCommonResult({
+        gameName: GAME_META.riddles.title,
+        playerName: gameState.playerName,
+        playerPhone: gameState.playerPhone,
+        metric1Label: "مؤشر IQ التقديري للأداء",
+        metric1Value: `${estimatedIQ} IQ`,
+        metric2Label: "الإجابات الصحيحة ومجموع النقاط",
+        metric2Value: `${gameState.correctCount}/${totalQ} • ${finalScore} نقطة`,
+        metric3Label: "متوسط سرعة الإجابة",
+        metric3Value: `${avgTime.toFixed(2)} ثانية`,
+        summaryLines: [`مؤشر IQ التقديري: ${estimatedIQ}`, `الإجابات الصحيحة: ${gameState.correctCount} من ${totalQ}`, `متوسط سرعة الإجابة: ${avgTime.toFixed(2)} ثانية`],
+        score: finalScore,
+        pros: pros.length ? pros : ["إتمام التحدي كاملًا والالتزام بحدود الوقت."],
+        cons: cons.length ? cons : ["أداء متوازن وسريع."]
+      });
+    }
+
+    function startReactionGame(name, phone) {
+      reactionState = { playerName: name, playerPhone: phone, round: 1, totalRounds: REACTION_ROUNDS, phase: "waiting", greenStart: 0, timesMs: [], score: 0 };
+      document.getElementById("reactionPlayScreen").style.display = "block";
+      prepareReactionRound();
+    }
+
+    function prepareReactionRound() {
+      clearTimeout(reactionTimeout);
+      reactionState.phase = "waiting";
+      document.getElementById("reactRoundText").textContent = `الجولة ${reactionState.round} من ${reactionState.totalRounds}`;
+      document.getElementById("reactLiveScore").textContent = Math.round(reactionState.score);
+      const pad = document.getElementById("reactionPad");
+      pad.className = "reaction-pad waiting";
+      document.getElementById("reactionTitle").textContent = "انتظر اللون الأخضر...";
+      document.getElementById("reactionSub").textContent = "لا تضغط قبل ظهور اللون الأخضر";
+      reactionTimeout = setTimeout(() => {
+        reactionState.phase = "ready";
+        reactionState.greenStart = performance.now();
+        pad.className = "reaction-pad ready";
+        document.getElementById("reactionTitle").textContent = "انقر الآن!";
+        document.getElementById("reactionSub").textContent = "أسرع نقرة تمنحك نقاطاً أعلى";
+      }, 1200 + Math.random() * 2300);
+    }
+
+    function handleReactionClick() {
+      if (!reactionState) return;
+      const pad = document.getElementById("reactionPad");
+      if (reactionState.phase === "waiting") {
+        clearTimeout(reactionTimeout);
+        reactionState.phase = "result";
+        reactionState.timesMs.push(650);
+        pad.className = "reaction-pad result";
+        document.getElementById("reactionTitle").textContent = "ضغط مبكر! (جزاء 650 مللي ثانية)";
+        document.getElementById("reactionSub").textContent = "جاري الانتقال للجولة التالية...";
+        setTimeout(advanceReactionRound, 950);
+        return;
+      }
+      if (reactionState.phase === "ready") {
+        const ms = Math.max(80, Math.round(performance.now() - reactionState.greenStart));
+        reactionState.timesMs.push(ms);
+        const pts = Math.max(25, Math.round(350 - ms * 0.45));
+        reactionState.score += pts;
+        document.getElementById("reactLiveScore").textContent = Math.round(reactionState.score);
+        reactionState.phase = "result";
+        pad.className = "reaction-pad result";
+        document.getElementById("reactionTitle").textContent = `⚡ ${ms} مللي ثانية (+${pts} نقطة)`;
+        document.getElementById("reactionSub").textContent = "جاري الانتقال للجولة التالية...";
+        setTimeout(advanceReactionRound, 900);
+      }
+    }
+
+    function advanceReactionRound() {
+      if (reactionState.round < reactionState.totalRounds) {
+        reactionState.round += 1;
+        prepareReactionRound();
+      } else {
+        finishReactionGame();
+      }
+    }
+
+    function finishReactionGame() {
+      document.getElementById("reactionPlayScreen").style.display = "none";
+      const avgMs = Math.round(reactionState.timesMs.reduce((a, b) => a + b, 0) / reactionState.timesMs.length);
+      const bestMs = Math.min(...reactionState.timesMs);
+      const finalScore = Math.round(reactionState.score);
+      const avgSec = Number((avgMs / 1000).toFixed(2));
+      let rating = "جيد";
+      if (avgMs < 240) rating = "⚡ خارق";
+      else if (avgMs < 320) rating = "🔥 سريع جداً";
+      else if (avgMs < 420) rating = "👍 جيد جداً";
+      syncScoreToCloud(reactionState.playerName, reactionState.playerPhone, finalScore, avgSec, avgMs < 500);
+      renderCommonResult({
+        gameName: GAME_META.reaction.title,
+        playerName: reactionState.playerName,
+        playerPhone: reactionState.playerPhone,
+        metric1Label: "تصنيف سرعة رد الفعل",
+        metric1Value: rating,
+        metric2Label: "مجموع النقاط وأفضل سرعة",
+        metric2Value: `${finalScore} نقطة • أفضل: ${bestMs}ms`,
+        metric3Label: "متوسط زمن الاستجابة",
+        metric3Value: `${avgMs} مللي ثانية`,
+        summaryLines: [`تصنيف السرعة: ${rating}`, `متوسط الاستجابة: ${avgMs} مللي ثانية`, `النقاط الإجمالية: ${finalScore}`],
+        score: finalScore,
+        pros: [avgMs <= 300 ? `سرعة استجابة ممتازة (${avgMs}ms).` : "إتمام جميع جولات الاختبار."],
+        cons: [avgMs > 300 ? `متوسط الاستجابة (${avgMs}ms) يمكن تحسينه.` : "حافظ على الثبات دون ضغط مبكر."]
+      });
+    }
+
+    function generateDigitSequence(len) {
+      let seq = "";
+      for (let i = 0; i < len; i++) seq += Math.floor(Math.random() * 10);
+      return seq;
+    }
+
+    function startMemoryGame(name, phone) {
+      memoryState = { playerName: name, playerPhone: phone, level: 1, length: 3, currentSeq: "", score: 0, mistakes: 0, maxLengthReached: 3 };
+      document.getElementById("memoryPlayScreen").style.display = "block";
+      startMemoryRound();
+    }
+
+    function startMemoryRound() {
+      clearTimeout(memoryTimeout);
+      memoryState.currentSeq = generateDigitSequence(memoryState.length);
+      document.getElementById("memLevelText").textContent = `المرحلة ${memoryState.level} (${memoryState.length} أرقام)`;
+      document.getElementById("memLiveScore").textContent = Math.round(memoryState.score);
+      document.getElementById("memoryInputArea").style.display = "none";
+      const box = document.getElementById("memorySequenceBox");
+      box.textContent = memoryState.currentSeq;
+      const showDuration = Math.min(4500, 1400 + memoryState.length * 380);
+      memoryTimeout = setTimeout(() => {
+        box.textContent = "••••••";
+        document.getElementById("memoryInputArea").style.display = "block";
+        const inp = document.getElementById("memoryUserInput");
+        inp.value = "";
+        inp.focus();
+      }, showDuration);
+    }
+
+    function checkMemoryAnswer() {
+      if (!memoryState) return;
+      const userVal = document.getElementById("memoryUserInput").value.trim();
+      const box = document.getElementById("memorySequenceBox");
+      if (userVal === memoryState.currentSeq) {
+        const gained = memoryState.length * 35;
+        memoryState.score += gained;
+        memoryState.maxLengthReached = Math.max(memoryState.maxLengthReached, memoryState.length);
+        memoryState.level += 1;
+        memoryState.length += 1;
+        document.getElementById("memLiveScore").textContent = Math.round(memoryState.score);
+        box.textContent = `✔️ صحيح! (+${gained})`;
+        setTimeout(startMemoryRound, 750);
+      } else {
+        memoryState.mistakes += 1;
+        if (memoryState.mistakes < 2) {
+          box.textContent = `❌ خطأ (الرقم كان: ${memoryState.currentSeq}) - محاولة أخيرة بنفس الطول`;
+          setTimeout(startMemoryRound, 1400);
+        } else {
+          box.textContent = `❌ انتهت المحاولات (الرقم كان: ${memoryState.currentSeq})`;
+          setTimeout(finishMemoryGame, 1100);
+        }
+      }
+    }
+
+    function finishMemoryGame() {
+      document.getElementById("memoryPlayScreen").style.display = "none";
+      const finalScore = Math.round(memoryState.score);
+      const maxLen = memoryState.maxLengthReached;
+      syncScoreToCloud(memoryState.playerName, memoryState.playerPhone, finalScore, Number((maxLen * 0.5).toFixed(2)), finalScore > 0);
+      renderCommonResult({
+        gameName: GAME_META.memory.title,
+        playerName: memoryState.playerName,
+        playerPhone: memoryState.playerPhone,
+        metric1Label: "أطول سلسلة رقمية صحيحة",
+        metric1Value: `${maxLen} أرقام`,
+        metric2Label: "مجموع النقاط والمرحلة",
+        metric2Value: `${finalScore} نقطة • المرحلة ${memoryState.level}`,
+        metric3Label: "مؤشر السعة الذهنية",
+        metric3Value: `${maxLen} خانات`,
+        summaryLines: [`أطول سلسلة رقمية صحيحة: ${maxLen} أرقام`, `النقاط الإجمالية: ${finalScore}`],
+        score: finalScore,
+        pros: [maxLen >= 6 ? `سعة ذاكرة قوية (${maxLen} أرقام).` : "تركيز جيد في المراحل الأولى."],
+        cons: [maxLen < 6 ? "قسّم الأرقام إلى مجموعات ثنائية أو ثلاثية لتسهيل حفظها." : "حافظ على هدوئك في السلاسل الطويلة."]
+      });
+    }
+
+    function generateMathProblem(roundIdx) {
+      const ops = ["+", "-", "×", "÷"];
+      const op = ops[roundIdx % ops.length];
+      let a = 0, b = 0, answer = 0, expr = "";
+      if (op === "+") {
+        a = Math.floor(Math.random() * 65) + 15;
+        b = Math.floor(Math.random() * 65) + 10;
+        answer = a + b;
+        expr = `${a} + ${b} = ?`;
+      } else if (op === "-") {
+        a = Math.floor(Math.random() * 80) + 30;
+        b = Math.floor(Math.random() * (a - 8)) + 5;
+        answer = a - b;
+        expr = `${a} - ${b} = ?`;
+      } else if (op === "×") {
+        a = Math.floor(Math.random() * 11) + 4;
+        b = Math.floor(Math.random() * 10) + 3;
+        answer = a * b;
+        expr = `${a} × ${b} = ?`;
+      } else {
+        b = Math.floor(Math.random() * 9) + 3;
+        answer = Math.floor(Math.random() * 12) + 4;
+        a = b * answer;
+        expr = `${a} ÷ ${b} = ?`;
+      }
+      const choicesSet = new Set([answer]);
+      while (choicesSet.size < 4) {
+        const delta = Math.floor(Math.random() * 15) + 1;
+        const cand = Math.random() < 0.5 ? answer + delta : Math.max(0, answer - delta);
+        choicesSet.add(cand);
+      }
+      return { expr, op, answer, options: [...choicesSet].sort(() => Math.random() - 0.5) };
+    }
+
+    function startMathGame(name, phone) {
+      const problems = [];
+      for (let i = 0; i < MATH_ROUNDS; i++) problems.push(generateMathProblem(i));
+      mathState = { playerName: name, playerPhone: phone, problems, index: 0, score: 0, correctCount: 0, times: [], startTime: 0 };
+      document.getElementById("mathPlayScreen").style.display = "block";
+      showMathProblem();
+    }
+
+    function showMathProblem() {
+      clearInterval(timerInterval);
+      const prob = mathState.problems[mathState.index];
+      document.getElementById("mathProgress").textContent = `المسألة ${mathState.index + 1} من ${mathState.problems.length}`;
+      document.getElementById("mathOpBadge").textContent = `العملية: ${prob.op}`;
+      document.getElementById("mathLiveScore").textContent = Math.round(mathState.score);
+      document.getElementById("mathQuestionText").textContent = prob.expr;
+      const wrap = document.getElementById("mathOptionsContainer");
+      wrap.innerHTML = "";
+      prob.options.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
+        btn.style.textAlign = "center";
+        btn.style.fontSize = "1.15rem";
+        btn.textContent = opt;
+        btn.onclick = () => submitMathAnswer(opt);
+        wrap.appendChild(btn);
+      });
+      mathState.startTime = performance.now();
+      updateTimerUI("mathTimeText", "mathTimerFill", MATH_TIME, MATH_TIME);
+      timerInterval = setInterval(() => {
+        const elapsed = (performance.now() - mathState.startTime) / 1000;
+        const remaining = Math.max(0, MATH_TIME - elapsed);
+        updateTimerUI("mathTimeText", "mathTimerFill", remaining, MATH_TIME);
+        if (remaining <= 0) {
+          clearInterval(timerInterval);
+          submitMathAnswer(null);
+        }
+      }, 100);
+    }
+
+    function submitMathAnswer(chosen) {
+      clearInterval(timerInterval);
+      document.querySelectorAll("#mathOptionsContainer .option-btn").forEach(b => (b.disabled = true));
+      const prob = mathState.problems[mathState.index];
+      const elapsed = Math.min(MATH_TIME, Number(((performance.now() - mathState.startTime) / 1000).toFixed(2)));
+      mathState.times.push(elapsed);
+      if (chosen !== null && chosen === prob.answer) {
+        mathState.correctCount += 1;
+        const bonus = Math.max(0, ((MATH_TIME - elapsed) / MATH_TIME) * 90);
+        mathState.score += Math.round(100 + bonus);
+      }
+      setTimeout(() => {
+        mathState.index += 1;
+        if (mathState.index < mathState.problems.length) showMathProblem();
+        else finishMathGame();
+      }, 300);
+    }
+
+    function finishMathGame() {
+      document.getElementById("mathPlayScreen").style.display = "none";
+      const total = mathState.problems.length;
+      const avgSec = Number((mathState.times.reduce((a, b) => a + b, 0) / total).toFixed(2));
+      const finalScore = Math.round(mathState.score);
+      const accPct = Math.round((mathState.correctCount / total) * 100);
+      syncScoreToCloud(mathState.playerName, mathState.playerPhone, finalScore, avgSec, accPct >= 50);
+      renderCommonResult({
+        gameName: GAME_META.math.title,
+        playerName: mathState.playerName,
+        playerPhone: mathState.playerPhone,
+        metric1Label: "نسبة الدقة الحسابية",
+        metric1Value: `${accPct}%`,
+        metric2Label: "الإجابات الصحيحة والنقاط",
+        metric2Value: `${mathState.correctCount}/${total} • ${finalScore} نقطة`,
+        metric3Label: "متوسط سرعة الحل",
+        metric3Value: `${avgSec} ثانية`,
+        summaryLines: [`نسبة الدقة الحسابية: ${accPct}%`, `متوسط سرعة الحل: ${avgSec} ثانية`, `النقاط: ${finalScore}`],
+        score: finalScore,
+        pros: [accPct >= 80 ? `دقة عالية (${accPct}%).` : "إكمال جميع المسائل الحسابية."],
+        cons: [avgSec > 3.5 ? `متوسط الحل (${avgSec}s) أبطأ من المثالي.` : "سرعة حساب جيدة."]
+      });
+    }
+
+    function startColorGame(name, phone) {
+      colorState = { playerName: name, playerPhone: phone, round: 1, totalRounds: COLOR_ROUNDS, score: 0, correctCount: 0, times: [], diffIndex: 0, roundStart: 0 };
+      document.getElementById("colorPlayScreen").style.display = "block";
+      showColorRound();
+    }
+
+    function showColorRound() {
+      clearInterval(timerInterval);
+      document.getElementById("colorRoundText").textContent = `الجولة ${colorState.round} من ${colorState.totalRounds}`;
+      document.getElementById("colorLiveScore").textContent = Math.round(colorState.score);
+      const gridSize = colorState.round <= 3 ? 3 : colorState.round <= 7 ? 4 : 5;
+      const totalTiles = gridSize * gridSize;
+      colorState.diffIndex = Math.floor(Math.random() * totalTiles);
+      const baseHue = Math.floor(Math.random() * 360);
+      const diffDelta = Math.max(6, 22 - colorState.round * 1.5);
+      const diffLight = 50 - diffDelta;
+      const baseColor = `hsl(${baseHue}, 70%, 50%)`;
+      const diffColor = `hsl(${baseHue}, 70%, ${diffLight}%)`;
+      const gridEl = document.getElementById("colorGrid");
+      gridEl.style.gridTemplateColumns = `repeat(${gridSize}, 1fr)`;
+      gridEl.innerHTML = "";
+      for (let i = 0; i < totalTiles; i++) {
+        const tile = document.createElement("button");
+        tile.className = "color-tile";
+        tile.style.backgroundColor = i === colorState.diffIndex ? diffColor : baseColor;
+        tile.onclick = () => submitColorPick(i);
+        gridEl.appendChild(tile);
+      }
+      colorState.roundStart = performance.now();
+      updateTimerUI("colorTimeText", "colorTimerFill", COLOR_TIME, COLOR_TIME);
+      timerInterval = setInterval(() => {
+        const elapsed = (performance.now() - colorState.roundStart) / 1000;
+        const remaining = Math.max(0, COLOR_TIME - elapsed);
+        updateTimerUI("colorTimeText", "colorTimerFill", remaining, COLOR_TIME);
+        if (remaining <= 0) {
+          clearInterval(timerInterval);
+          submitColorPick(null);
+        }
+      }, 100);
+    }
+
+    function submitColorPick(pickedIdx) {
+      clearInterval(timerInterval);
+      document.querySelectorAll("#colorGrid .color-tile").forEach(t => (t.disabled = true));
+      const elapsed = Math.min(COLOR_TIME, Number(((performance.now() - colorState.roundStart) / 1000).toFixed(2)));
+      colorState.times.push(elapsed);
+      if (pickedIdx === colorState.diffIndex) {
+        colorState.correctCount += 1;
+        const bonus = Math.max(0, ((COLOR_TIME - elapsed) / COLOR_TIME) * 85);
+        colorState.score += Math.round(100 + bonus);
+      }
+      setTimeout(() => {
+        if (colorState.round < colorState.totalRounds) {
+          colorState.round += 1;
+          showColorRound();
+        } else {
+          finishColorGame();
+        }
+      }, 280);
+    }
+
+    function finishColorGame() {
+      document.getElementById("colorPlayScreen").style.display = "none";
+      const total = colorState.totalRounds;
+      const avgSec = Number((colorState.times.reduce((a, b) => a + b, 0) / total).toFixed(2));
+      const finalScore = Math.round(colorState.score);
+      const accPct = Math.round((colorState.correctCount / total) * 100);
+      syncScoreToCloud(colorState.playerName, colorState.playerPhone, finalScore, avgSec, accPct >= 50);
+      renderCommonResult({
+        gameName: GAME_META.color.title,
+        playerName: colorState.playerName,
+        playerPhone: colorState.playerPhone,
+        metric1Label: "دقة التمييز البصري",
+        metric1Value: `${accPct}%`,
+        metric2Label: "الجولات الناجحة والنقاط",
+        metric2Value: `${colorState.correctCount}/${total} • ${finalScore} نقطة`,
+        metric3Label: "متوسط سرعة الاكتشاف",
+        metric3Value: `${avgSec} ثانية`,
+        summaryLines: [`دقة التمييز البصري: ${accPct}%`, `متوسط الاكتشاف: ${avgSec} ثانية`, `النقاط: ${finalScore}`],
+        score: finalScore,
+        pros: [accPct >= 80 ? `تمييز بصري دقيق (${accPct}%).` : "إتمام جميع الجولات."],
+        cons: [avgSec > 2.8 ? `متوسط الاكتشاف (${avgSec}s) يمكن تسريعه.` : "سرعة ملاحظة ممتازة."]
+      });
+    }
+
+    function renderCommonResult(data) {
+      document.getElementById("resultScreen").style.display = "block";
+      document.getElementById("resultPlayerSummary").textContent =
+        `اللعبة: ${data.gameName} • اللاعب: ${data.playerName} • التواصل: ${data.playerPhone}`;
+      document.getElementById("metric1Label").textContent = data.metric1Label;
+      document.getElementById("metric2Label").textContent = data.metric2Label;
+      document.getElementById("metric3Label").textContent = data.metric3Label;
+      document.getElementById("iqScore").textContent = data.metric1Value;
+      document.getElementById("correctAndPoints").textContent = data.metric2Value;
+      document.getElementById("avgSpeed").textContent = data.metric3Value;
+      document.getElementById("prosList").innerHTML = data.pros.map(p => `<li>${escapeHtml(p)}</li>`).join("");
+      document.getElementById("consList").innerHTML = data.cons.map(c => `<li>${escapeHtml(c)}</li>`).join("");
+      lastReport = {
+        gameName: data.gameName,
+        playerName: data.playerName,
+        playerPhone: data.playerPhone,
+        summaryLines: data.summaryLines,
+        score: data.score,
+        pros: data.pros,
+        cons: data.cons,
+        date: new Date().toLocaleString("ar-SY")
+      };
+    }
+
+    function downloadResult() {
+      if (!lastReport) return;
+      const content = [
+        `=== تقرير نتيجة ${lastReport.gameName} ===`,
+        `التاريخ: ${lastReport.date}`,
+        `اللاعب: ${lastReport.playerName}`,
+        `بيانات التواصل: ${lastReport.playerPhone}`,
+        ...lastReport.summaryLines,
+        "",
+        "الإيجابيات:",
+        ...lastReport.pros.map(x => `- ${x}`),
+        "",
+        "السلبيات ونقاط التحسين:",
+        ...lastReport.cons.map(x => `- ${x}`)
+      ].join("\n");
+      const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `نتيجة-${lastReport.playerName}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function copyShamcashValue(text, msg) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).catch(() => {});
+      }
+      const feedback = document.getElementById("copyFeedback");
+      feedback.textContent = msg;
+      setTimeout(() => {
+        if (feedback.textContent === msg) feedback.textContent = "";
+      }, 2500);
+    }
+
+    async function registerParticipant() {
+      const name = document.getElementById("regName").value.trim();
+      const contact = document.getElementById("regContact").value.trim();
+      const refCode = document.getElementById("regRef").value.trim();
+
+      if (!name || !contact || !refCode) {
+        alert("يرجى إدخال الاسم ورقم التواصل/شام كاش ورقم عملية التحويل.");
+        return;
+      }
+
+      const payload = {
+        game_key: activeGame,
+        name,
+        contact,
+        ref_code: refCode,
+        fee_paid: ENTRY_FEE,
+        confirmed: false,
+        played: false,
+        is_correct: false,
+        score: 0,
+        avg_time: 9.99,
+        created_at: Date.now()
+      };
+
+      const btn = document.getElementById("btnRegister");
+      btn.disabled = true;
+
+      let savedToCloud = false;
+      if (firestoreDb) {
+        try {
+          const docRef = await addDoc(collection(firestoreDb, COLLECTION_NAME), payload);
+          payload.id = docRef.id;
+          savedToCloud = true;
+          cloudAvailable = true;
+        } catch (err) {
+          console.error("Firestore insert error:", err);
+        }
+      }
+
+      btn.disabled = false;
+
+      if (!savedToCloud) {
+        payload.id = `local_${Date.now()}`;
+        const list = readLocalFallback(activeGame);
+        list.push(payload);
+        writeLocalFallback(activeGame, list);
+      }
+
+      document.getElementById("regName").value = "";
+      document.getElementById("regContact").value = "";
+      document.getElementById("regRef").value = "";
+      alert(
+        "تم إرسال طلب اشتراكك بنجاح. سيُسمح بدخولك للمسابقة يوم الجمعة بعد وصول المال وموافقة الإدارة."
+      );
+      await renderLeague();
+    }
+
+    async function confirmParticipantPayment(participantId) {
+      if (!isAdminMode) {
+        alert("هذه الصلاحية للأدمن فقط.");
+        return;
+      }
+      if (firestoreDb && cloudAvailable && typeof participantId === "string" && !participantId.startsWith("local_")) {
+        try {
+          await updateDoc(doc(firestoreDb, COLLECTION_NAME, participantId), { confirmed: true });
+        } catch (e) {
+          console.error("Firestore confirm error:", e);
+        }
+      }
+      const list = currentParticipantsCache.map(p => (p.id === participantId ? { ...p, confirmed: true } : p));
+      currentParticipantsCache = list;
+      writeLocalFallback(activeGame, list);
+      await renderLeague();
+    }
+
+    async function removeParticipant(participantId) {
+      if (!isAdminMode) {
+        alert("هذه الصلاحية للأدمن فقط.");
+        return;
+      }
+      if (!confirm("هل تريد حذف هذا الطلب من قائمة المسابقة؟")) return;
+      if (firestoreDb && cloudAvailable && typeof participantId === "string" && !participantId.startsWith("local_")) {
+        try {
+          await deleteDoc(doc(firestoreDb, COLLECTION_NAME, participantId));
+        } catch (e) {
+          console.error("Firestore delete error:", e);
+        }
+      }
+      const list = currentParticipantsCache.filter(p => p.id !== participantId);
+      currentParticipantsCache = list;
+      writeLocalFallback(activeGame, list);
+      await renderLeague();
+    }
+
+    function getRankedConfirmedParticipants() {
+      return currentParticipantsCache
+        .filter(p => p.confirmed === true)
+        .sort((a, b) => {
+          const aCorrect = a.is_correct === true || Number(a.score || 0) > 0;
+          const bCorrect = b.is_correct === true || Number(b.score || 0) > 0;
+          if (aCorrect !== bCorrect) return aCorrect ? -1 : 1;
+          if (Number(b.score || 0) !== Number(a.score || 0)) return Number(b.score || 0) - Number(a.score || 0);
+          return Number(a.avg_time ?? 999) - Number(b.avg_time ?? 999);
+        });
+    }
+
+    function computeWinnersList() {
+      const ranked = getRankedConfirmedParticipants();
+      if (ranked.length === 0) return [];
+      const totalPool = ranked.length * ENTRY_FEE;
+      const rates = [0.3, 0.2, 0.1];
+      const medals = ["🥇 المركز الأول (30%)", "🥈 المركز الثاني (20%)", "🥉 المركز الثالث (10%)"];
+      return ranked.slice(0, 3).map((p, i) => ({
+        id: p.id,
+        rankLabel: medals[i],
+        name: p.name,
+        contact: p.contact,
+        score: Number(p.score || 0),
+        avg_time: Number(p.avg_time ?? 0),
+        prize: Number((totalPool * rates[i]).toFixed(1))
+      }));
+    }
+
+    function finishWeeklyContest() {
+      if (!isAdminMode && !isSaturdayResultsDay()) {
+        alert("نتائج الفائزين وتصنيفاتهم تُعرض يوم السبت.");
+        return;
+      }
+      const winners = computeWinnersList();
+      if (winners.length === 0) {
+        alert("لا يوجد مشتركين مؤكدين لإعلان الفائزين.");
+        return;
+      }
+      currentWinnersCache = winners;
+      renderWinnersBox();
+    }
+
+    function renderWinnersBox() {
+      const winnersSection = document.getElementById("winnersSection");
+      const canShowResults = isSaturdayResultsDay() || isAdminMode;
+
+      if (!canShowResults) {
+        winnersSection.style.display = "none";
+        return;
+      }
+
+      const winners = currentWinnersCache.length > 0 ? currentWinnersCache : computeWinnersList();
+      if (winners.length > 0) {
+        winnersSection.style.display = "block";
+        document.getElementById("winnersList").innerHTML = winners
+          .map(w => {
+            const contactPart = isAdminMode ? ` (${escapeHtml(w.contact)})` : "";
+            return `<p style="margin:8px 0;"><strong>${escapeHtml(w.rankLabel)}</strong>: ${escapeHtml(w.name)}${contactPart} — النتيجة: <strong>${w.score}</strong> نقطة — السرعة: <strong>${w.avg_time.toFixed(2)} ث</strong> — الجائزة: <strong style="color:#4ade80;">${w.prize} ل.س جديدة</strong></p>`;
+          })
+          .join("");
+        document.getElementById("winnerSelect").innerHTML = winners
+          .map(w => `<option value="${escapeHtml(String(w.id))}">${escapeHtml(w.name)} (${escapeHtml(w.contact)}) — ${w.prize} ل.س جديدة</option>`)
+          .join("");
+      } else {
+        winnersSection.style.display = "none";
+      }
+    }
+
+    async function clearWeeklyContest() {
+      if (!isAdminMode) {
+        alert("هذه الصلاحية للأدمن فقط.");
+        return;
+      }
+      if (!confirm(`هل تريد حذف جميع مشتركين مسابقة (${GAME_META[activeGame].shortName}) وبدء أسبوع جديد؟`)) return;
+      if (firestoreDb && cloudAvailable) {
+        try {
+          const q = query(collection(firestoreDb, COLLECTION_NAME), where("game_key", "==", activeGame));
+          const snap = await getDocs(q);
+          const deletions = snap.docs.map(d => deleteDoc(doc(firestoreDb, COLLECTION_NAME, d.id)));
+          await Promise.all(deletions);
+        } catch (e) {
+          console.error("Firestore clear error:", e);
+        }
+      }
+      currentParticipantsCache = [];
+      writeLocalFallback(activeGame, []);
+      currentWinnersCache = [];
+      document.getElementById("contactConfirmation").textContent = "";
+      await renderLeague();
+    }
+
+    function sendWinnerContactRequest() {
+      if (!isAdminMode) return;
+      const select = document.getElementById("winnerSelect");
+      const channel = document.getElementById("contactChannel").value;
+      const note = document.getElementById("payoutNote").value.trim() || "جاهز لاستلام الجائزة عبر شام كاش";
+      const selectedWinnerText = select.options[select.selectedIndex]?.textContent || "";
+      if (!selectedWinnerText) return;
+      document.getElementById("contactConfirmation").textContent =
+        `✅ تم تسجيل طلب التواصل مع (${selectedWinnerText}) عبر (${channel}) — ملاحظة: ${note}`;
+    }
+
+    function drawParticipantsTable() {
+      const ranked = getRankedConfirmedParticipants();
+      const count = ranked.length;
+      const totalPool = count * ENTRY_FEE;
+      const p1 = Number((totalPool * 0.3).toFixed(1));
+      const p2 = Number((totalPool * 0.2).toFixed(1));
+      const p3 = Number((totalPool * 0.1).toFixed(1));
+
+      document.getElementById("totalParticipants").textContent = count;
+      document.getElementById("totalPool").textContent = `${totalPool} ل.س جديدة`;
+      document.getElementById("prizesBreakdown").textContent =
+        `الأول: ${p1} | الثاني: ${p2} | الثالث: ${p3}`;
+
+      const tbody = document.getElementById("participantsTableBody");
+      if (currentParticipantsCache.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--muted);">لا يوجد مشتركين مسجلين في مسابقة هذه اللعبة بعد هذا الأسبوع.</td></tr>`;
+      } else {
+        tbody.innerHTML = currentParticipantsCache
+          .map((p, idx) => {
+            const safeIdArg = JSON.stringify(String(p.id));
+            const statusBadge = p.confirmed
+              ? `<span class="badge badge-ok">مؤكد</span>`
+              : `<span class="badge badge-pending">قيد المراجعة</span>`;
+
+            const contactCell = isAdminMode
+              ? escapeHtml(p.contact)
+              : `<span class="badge badge-secret">مخفي (للأدمن)</span>`;
+            const refCell = isAdminMode
+              ? `<code>${escapeHtml(p.ref_code)}</code>`
+              : `<span class="badge badge-secret">مخفي (للأدمن)</span>`;
+
+            const adminBtns = isAdminMode
+              ? `
+                <span class="no-print" style="display:inline-flex; gap:6px; margin-right:6px;">
+                  ${!p.confirmed ? `<button class="btn-success" style="padding:5px 10px; font-size:0.8rem;" onclick='confirmParticipantPayment(${safeIdArg})'>موافقة وتأكيد</button>` : ""}
+                  <button class="btn-danger" style="padding:5px 10px; font-size:0.8rem;" onclick='removeParticipant(${safeIdArg})'>حذف</button>
+                </span>
+              `
+              : "";
+
+            return `
+              <tr>
+                <td>${idx + 1}</td>
+                <td>${escapeHtml(p.name)}</td>
+                <td>${contactCell}</td>
+                <td>${refCell}</td>
+                <td><strong>${escapeHtml(p.score || 0)}</strong> نقطة</td>
+                <td>${Number(p.avg_time ?? 0).toFixed(2)}</td>
+                <td>
+                  ${statusBadge}
+                  ${adminBtns}
+                </td>
+              </tr>
+            `;
+          })
+          .join("");
+      }
+
+      renderWinnersBox();
+    }
+
+    async function renderLeague() {
+      renderScheduleBanner();
+      applyAdminVisibility();
+
+      if (!firestoreDb) {
+        cloudAvailable = false;
+        currentParticipantsCache = readLocalFallback(activeGame);
+        setCloudNotice("وضع الحفظ المحلي نشط حالياً.");
+        drawParticipantsTable();
+        return;
+      }
+
+      try {
+        const q = query(collection(firestoreDb, COLLECTION_NAME), where("game_key", "==", activeGame));
+        const snap = await getDocs(q);
+        const rows = snap.docs
+          .map(d => ({ id: d.id, ...d.data() }))
+          .sort((a, b) => Number(a.created_at || 0) - Number(b.created_at || 0));
+
+        cloudAvailable = true;
+        setCloudNotice("");
+        currentParticipantsCache = rows;
+        writeLocalFallback(activeGame, currentParticipantsCache);
+        drawParticipantsTable();
+      } catch (err) {
+        console.error("Firestore read error:", err);
+        cloudAvailable = false;
+        currentParticipantsCache = readLocalFallback(activeGame);
+        setCloudNotice(
+          `تنبيه: تعذر الاتصال بـ Firestore حالياً (${err.message}). تم تفعيل الحفظ المحلي مؤقتاً.`
+        );
+        drawParticipantsTable();
+      }
+    }
+
+    Object.assign(window, {
+      selectGame,
+      switchTab,
+      abortToStart,
+      resetGame,
+      startCurrentGame,
+      handleReactionClick,
+      checkMemoryAnswer,
+      downloadResult,
+      copyShamcashValue,
+      registerParticipant,
+      confirmParticipantPayment,
+      removeParticipant,
+      finishWeeklyContest,
+      clearWeeklyContest,
+      sendWinnerContactRequest,
+      renderLeague,
+      toggleAdminMode,
+      closeAdminModal,
+      togglePasswordVisibility,
+      submitAdminLogin,
+      logoutAdminMode,
+      setSimulatedDay
+    });
+
+    renderScheduleBanner();
+    applyAdminVisibility();
+    selectGame("riddles");
+  </script>
+</body>
+</html>
